@@ -1,26 +1,35 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class LassoController : MonoBehaviour
 {
-     public LineRenderer lineRenderer;
+    public LineRenderer lineRenderer;
     public float maxDistance = 20f;
-    public float springForce = 50f;
-    public float springDamping = 5f;
+    
+    // Properties for SpringJoint2D
+    public float springFrequency = 5f;
+    public float springDampingRatio = 0.7f;
+
     public KeyCode lassoKey = KeyCode.Mouse0;
     public KeyCode detachKey = KeyCode.Mouse1;
 
-    private SpringJoint springJoint;
-    private Rigidbody targetRb;
+    private SpringJoint2D springJoint;
+    private Rigidbody2D targetRb;
     private Transform lassoOrigin;
+    private Rigidbody2D playerRb; // The player's own Rigidbody2D
 
     void Start()
     {
-        // The origin of the lasso is in this case the player
-        lassoOrigin = this.transform; 
+        lassoOrigin = this.transform;
+        // The player must have a Rigidbody2D for the joint to work.
+        playerRb = GetComponent<Rigidbody2D>(); 
+        if (playerRb == null)
+        {
+            Debug.LogError("LassoController requires a Rigidbody2D component on the player object.");
+        }
         lineRenderer.positionCount = 0;
+        // Ensure the LineRenderer is using world space
+        lineRenderer.useWorldSpace = true;
     }
 
     void Update()
@@ -36,7 +45,7 @@ public class LassoController : MonoBehaviour
         }
     }
 
-    private void LateUpdate()
+    void LateUpdate()
     {
         UpdateLineRenderer();
     }
@@ -45,74 +54,74 @@ public class LassoController : MonoBehaviour
     {
         // Create a ray from the camera to the mouse cursor position
         Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Plane groundPlane = new Plane(Vector3.up, Vector3.zero); // Assumes ground is at y=0
+        // Create a plane at the player's z-position to ensure accurate aiming
+        Plane gamePlane = new Plane(Vector3.forward, new Vector3(0, 0, lassoOrigin.position.z));
 
-        if (groundPlane.Raycast(cameraRay, out float rayLength))
+        if (gamePlane.Raycast(cameraRay, out float rayLength))
         {
-            Vector3 pointToLookAt = cameraRay.GetPoint(rayLength);
-            Vector3 direction = (pointToLookAt - lassoOrigin.position).normalized;
+            Vector3 worldPoint = cameraRay.GetPoint(rayLength);
+            Vector2 direction = (new Vector2(worldPoint.x, worldPoint.y) - (Vector2)lassoOrigin.position).normalized;
 
-            // The actual ray for the lasso
-            Ray lassoRay = new Ray(lassoOrigin.position, direction);
+            // Cast a 2D ray
+            RaycastHit2D hit = Physics2D.Raycast(lassoOrigin.position, direction, maxDistance);
 
-            if (Physics.Raycast(lassoRay, out RaycastHit hit, maxDistance))
+            if (hit.collider != null)
             {
                 if (hit.collider.CompareTag("Interactable"))
                 {
                     Debug.Log("Lassoed Object: " + hit.collider.name);
-                    AttachToTarget(hit.collider.GetComponent<Rigidbody>());
+                    AttachToTarget(hit.collider.GetComponent<Rigidbody2D>());
                 }
                 else
                 {
-                    // Lasso hits something non-interactable
                     Debug.Log("Hit Uninteractable Object: " + hit.collider.name);
                     ShowMissLasso(hit.point);
                 }
             }
             else
             {
-                // No hit at all
                 Debug.Log("Lasso Missed");
-                Vector3 missPoint = lassoOrigin.position + direction * maxDistance;
+                Vector2 missPoint = (Vector2)lassoOrigin.position + direction * maxDistance;
                 ShowMissLasso(missPoint);
             }
         }
     }
 
-    void ShowMissLasso(Vector3 endPoint)
+    void ShowMissLasso(Vector2 endPoint)
     {
         StartCoroutine(ShowLassoLineTemporarily(endPoint));
     }
 
-    IEnumerator ShowLassoLineTemporarily(Vector3 endPoint)
+    IEnumerator ShowLassoLineTemporarily(Vector2 endPoint)
     {
         lineRenderer.positionCount = 2;
-        lineRenderer.SetPosition(0, lassoOrigin.position);
-        lineRenderer.SetPosition(1, endPoint);
+        lineRenderer.SetPosition(0, new Vector3(lassoOrigin.position.x, lassoOrigin.position.y, 0));
+        lineRenderer.SetPosition(1, new Vector3(endPoint.x, endPoint.y, 0));
 
-        yield return new WaitForSeconds(0.2f); // Show for 0.2 seconds
+        yield return new WaitForSeconds(0.2f);
 
-        if (springJoint == null) // Only clear if we didn't hit and attach
+        if (springJoint == null)
             lineRenderer.positionCount = 0;
     }
 
-    void AttachToTarget(Rigidbody target)
+    void AttachToTarget(Rigidbody2D target)
     {
+        if (target == null) return; // Don't attach if the target has no Rigidbody2D
+
         DetachLasso(); // Remove any existing joint
 
         targetRb = target;
 
-        // Add SpringJoint to the target
-        springJoint = target.gameObject.AddComponent<SpringJoint>();
-        springJoint.connectedBody = null; // Attach to world point
-        springJoint.autoConfigureConnectedAnchor = false;
-        springJoint.connectedAnchor = lassoOrigin.position;
+        // Add SpringJoint2D to the player object and connect it to the target
+        springJoint = gameObject.AddComponent<SpringJoint2D>();
+        springJoint.connectedBody = targetRb;
+        springJoint.autoConfigureDistance = false;
+        springJoint.distance = Vector2.Distance(playerRb.position, targetRb.position);
+        
+        // Set spring properties
+        springJoint.frequency = springFrequency;
+        springJoint.dampingRatio = springDampingRatio;
 
-        springJoint.spring = springForce;
-        springJoint.damper = springDamping;
-        springJoint.maxDistance = Vector3.Distance(target.position, lassoOrigin.position);
-
-        // Setup line renderer
         lineRenderer.positionCount = 2;
     }
 
@@ -132,11 +141,8 @@ public class LassoController : MonoBehaviour
     {
         if (targetRb != null && springJoint != null)
         {
-            lineRenderer.SetPosition(0, lassoOrigin.position);
-            lineRenderer.SetPosition(1, targetRb.position);
-
-            // Update anchor in case player moves
-            springJoint.connectedAnchor = lassoOrigin.position;
+            lineRenderer.SetPosition(0, new Vector3(lassoOrigin.position.x, lassoOrigin.position.y, 0));
+            lineRenderer.SetPosition(1, new Vector3(targetRb.position.x, targetRb.position.y, 0));
         }
     }
 }

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2671682264856734583}
   - component: {fileID: 4153268314751398082}
   - component: {fileID: 2966817318969695513}
-  - component: {fileID: 5231927281776675079}
+  - component: {fileID: 7308638283017592743}
   m_Layer: 0
   m_Name: Cowboy
   m_TagString: Untagged
@@ -33,7 +33,7 @@ Transform:
   m_GameObject: {fileID: 1051759669975168039}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0.59, y: 2.211, z: -0.36}
+  m_LocalPosition: {x: 0.59, y: 2.211, z: 0}
   m_LocalScale: {x: 2, y: 0.05, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -280,7 +280,7 @@ LineRenderer:
   m_UseWorldSpace: 1
   m_Loop: 0
   m_ApplyActiveColorSpace: 1
---- !u!114 &5231927281776675079
+--- !u!114 &7308638283017592743
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -289,12 +289,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 1051759669975168039}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7a0dd6f66f932834181ca804a7fe13af, type: 3}
+  m_Script: {fileID: 11500000, guid: 2acae6a3863d4d0ea21362de7c4a95a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 2966817318969695513}
-  maxDistance: 10
-  springForce: 50
-  springDamping: 5
-  lassoKey: 323
-  detachKey: 324
+  lassoMaxDistance: 10
