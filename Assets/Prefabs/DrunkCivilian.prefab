@@ -17,7 +17,7 @@ GameObject:
   - component: {fileID: -2651581895859416212}
   m_Layer: 0
   m_Name: DrunkCivilian
-  m_TagString: Untagged
+  m_TagString: Civilian
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
