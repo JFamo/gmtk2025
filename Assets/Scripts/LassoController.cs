@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class LassoController : MonoBehaviour
@@ -15,8 +16,8 @@ public class LassoController : MonoBehaviour
 
     void Start()
     {
-        // Optional: define the origin point of the lasso (e.g., a child empty GameObject)
-        lassoOrigin = this.transform; // or assign in Inspector
+        // The origin of the lasso is in this case the player
+        lassoOrigin = this.transform; 
         lineRenderer.positionCount = 0;
     }
 
@@ -37,15 +38,57 @@ public class LassoController : MonoBehaviour
 
     void TryLasso()
     {
-        Ray ray = new Ray(lassoOrigin.position, lassoOrigin.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, maxDistance))
+        // Create a ray from the camera to the mouse cursor position
+        Ray cameraRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Plane groundPlane = new Plane(Vector3.up, Vector3.zero); // Assumes ground is at y=0
+
+        if (groundPlane.Raycast(cameraRay, out float rayLength))
         {
-            if (hit.collider.CompareTag("Interactable"))
+            Vector3 pointToLookAt = cameraRay.GetPoint(rayLength);
+            Vector3 direction = (pointToLookAt - lassoOrigin.position).normalized;
+
+            // The actual ray for the lasso
+            Ray lassoRay = new Ray(lassoOrigin.position, direction);
+
+            if (Physics.Raycast(lassoRay, out RaycastHit hit, maxDistance))
             {
-                Debug.Log("Lassoed Object: " + hit.collider.name);
-                AttachToTarget(hit.collider.GetComponent<Rigidbody>());
+                if (hit.collider.CompareTag("Interactable"))
+                {
+                    Debug.Log("Lassoed Object: " + hit.collider.name);
+                    AttachToTarget(hit.collider.GetComponent<Rigidbody>());
+                }
+                else
+                {
+                    // Lasso hits something non-interactable
+                    Debug.Log("Hit Uninteractable Object: " + hit.collider.name);
+                    ShowMissLasso(hit.point);
+                }
+            }
+            else
+            {
+                // No hit at all
+                Debug.Log("Lasso Missed");
+                Vector3 missPoint = lassoOrigin.position + direction * maxDistance;
+                ShowMissLasso(missPoint);
             }
         }
+    }
+
+    void ShowMissLasso(Vector3 endPoint)
+    {
+        StartCoroutine(ShowLassoLineTemporarily(endPoint));
+    }
+    
+    IEnumerator ShowLassoLineTemporarily(Vector3 endPoint)
+    {
+        lineRenderer.positionCount = 2;
+        lineRenderer.SetPosition(0, lassoOrigin.position);
+        lineRenderer.SetPosition(1, endPoint);
+
+        yield return new WaitForSeconds(0.2f); // Show for 0.2 seconds
+
+        if (springJoint == null) // Only clear if we didn't hit and attach
+            lineRenderer.positionCount = 0;
     }
 
     void AttachToTarget(Rigidbody target)
