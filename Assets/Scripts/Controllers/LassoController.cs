@@ -4,8 +4,10 @@ using UnityEngine.Serialization;
 
 public class LassoController : MonoBehaviour
 {
-    [Tooltip("The maximum distance the grapple can reach.")]
+    [Tooltip("The maximum distance the lasso can reach.")]
     public float lassoMaxDistance = 10f;
+    [Tooltip("How fast the lasso line extends outwards.")]
+    public float lassoCastSpeed = 50f;
     [Tooltip("How long the line shows when a grapple misses.")]
     public float missShotDisplayDurationSecs = 0.25f;
 
@@ -22,6 +24,7 @@ public class LassoController : MonoBehaviour
     
     private LineRenderer lineRenderer;
     private SpringJoint2D springJoint;
+    private Coroutine lassoCastCoroutine;
 
     void Start()
     {
@@ -53,24 +56,25 @@ public class LassoController : MonoBehaviour
 
     void ThrowLasso()
     {
-        if (springJoint) return;
+        if (lassoCastCoroutine != null || springJoint != null) return;
+
+        Rigidbody2D targetRb = null; // Target object to attach the lasso to, if caught
         
-        float distanceToObjects = Mathf.Abs(transform.position.z - Camera.main.transform.position.z);
+        float distCameraToObjects = Mathf.Abs(transform.position.z - Camera.main.transform.position.z);
         Vector3 mouseScreenPosition = Input.mousePosition;
-        mouseScreenPosition.z = distanceToObjects;
+        mouseScreenPosition.z = distCameraToObjects;
         Vector3 clickPosition = Camera.main.ScreenToWorldPoint(mouseScreenPosition);
         
         RaycastHit2D hit = Physics2D.Raycast(clickPosition, Vector2.zero);
+        float distanceThrown = Vector2.Distance(transform.position, clickPosition);
         if (hit.collider != null) // Set interactable tag on target objects
         {
             if (hit.collider.CompareTag("Civilian") || hit.collider.CompareTag("Collectible"))
             {
-                float distance = Vector2.Distance(transform.position, hit.collider.transform.position);
-                Debug.Log($"Clicked object: {hit.collider.name} {distance} units away");
-                if (distance <= lassoMaxDistance)
+                Debug.Log($"Clicked object: {hit.collider.name} {distanceThrown} units away");
+                if (distanceThrown <= lassoMaxDistance)
                 {
-                    AttachLasso(hit.collider.GetComponent<Rigidbody2D>());
-                    return;
+                    targetRb = hit.collider.gameObject.GetComponent<Rigidbody2D>();
                 }
             }
             else
@@ -82,26 +86,61 @@ public class LassoController : MonoBehaviour
         {
             Debug.Log("Lasso Missed: no collider was hit");
         }
-        // Object too far, object uninteractable, or no object hit
-        StartCoroutine(ShowMissedShot(clickPosition));
+
+        if (distanceThrown > lassoMaxDistance)
+        {
+            Vector3 lassoDirection = (clickPosition - transform.position).normalized;
+            Vector3 endPoint = transform.position + lassoDirection * lassoMaxDistance;
+            lassoCastCoroutine = StartCoroutine(AnimateLasso(endPoint, targetRb));
+        }
+        else
+        {
+            lassoCastCoroutine = StartCoroutine(AnimateLasso(clickPosition, targetRb));
+        }
     }
 
-    void AttachLasso(Rigidbody2D targetRb)
+    IEnumerator AnimateLasso(Vector3 clickPos, Rigidbody2D targetRb)
     {
-        // Set spring joint
-        springJoint = gameObject.AddComponent<SpringJoint2D>();
-        springJoint.autoConfigureDistance = false;
-        springJoint.connectedBody = targetRb;
-        // Set spring properties for the "pulling" lasso effect
-        springJoint.distance = targetRb.CompareTag("Civilian") ? civilianSpringDistance : collectibleSpringDistance;
-        springJoint.dampingRatio = springDampingRatio;
-        springJoint.frequency = springFrequency;
-        // Draw the line renderer
         lineRenderer.enabled = true;
-        lineRenderer.SetPosition(0, transform.position);
-        lineRenderer.SetPosition(1, targetRb.position);
-
-        Debug.Log($"Lasso attached to {targetRb.name}");
+        Vector2 startPoint = transform.position;
+        Vector2 currentPosition = startPoint;
+        
+        float elapsedTime = 0f;
+        float timeToTarget = Vector2.Distance(startPoint, clickPos) / lassoCastSpeed;
+        
+        while (elapsedTime < timeToTarget)
+        {
+            // Update the line's start and end points during animation
+            lineRenderer.SetPosition(0, transform.position);
+            currentPosition = Vector2.Lerp(startPoint, clickPos, elapsedTime / timeToTarget);
+            lineRenderer.SetPosition(1, currentPosition);
+            
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        
+        // Ensure the line reaches the exact target position
+        lineRenderer.SetPosition(1, clickPos);
+        // If we hit an object, create the joint
+        if (targetRb != null)
+        {
+            // Set spring joint
+            springJoint = gameObject.AddComponent<SpringJoint2D>();
+            springJoint.autoConfigureDistance = false;
+            springJoint.connectedBody = targetRb;
+            // Set spring properties for the "pulling" lasso effect
+            springJoint.distance = targetRb.CompareTag("Civilian") ? civilianSpringDistance : collectibleSpringDistance;
+            springJoint.dampingRatio = springDampingRatio;
+            springJoint.frequency = springFrequency;
+        }
+        else
+        {
+            yield return new WaitForSeconds(missShotDisplayDurationSecs);
+            lineRenderer.enabled = false;
+        }
+        
+        // Mark the coroutine as finished
+        lassoCastCoroutine = null;
     }
 
     void DetachLasso()
