@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class LassoController : MonoBehaviour
 {
@@ -14,8 +15,10 @@ public class LassoController : MonoBehaviour
     [Tooltip("The damping ratio of the spring. 0 is bouncy, 1 is critical damping.")]
     [Range(0f, 1f)]
     public float springDampingRatio = 0.5f;
-    [Tooltip("The resting distance of the spring. A small value pulls the object in.")]
-    public float springDistance = 3f;
+    [Tooltip("The resting distance of the spring for civilians")]
+    public float civilianSpringDistance = 3f;
+    [Tooltip("The resting distance of the spring for collectibles")]
+    public float collectibleSpringDistance = 1f;
     
     private LineRenderer lineRenderer;
     private SpringJoint2D springJoint;
@@ -23,6 +26,7 @@ public class LassoController : MonoBehaviour
     void Start()
     {
         lineRenderer = GetComponent<LineRenderer>();
+        springJoint = null;
 
         // Setup LineRenderer
         lineRenderer.positionCount = 2;
@@ -87,7 +91,7 @@ public class LassoController : MonoBehaviour
         springJoint.autoConfigureDistance = false;
         springJoint.connectedBody = targetRb;
         // Set spring properties for the "pulling" lasso effect
-        springJoint.distance = springDistance;
+        springJoint.distance = targetRb.CompareTag("Civilian") ? civilianSpringDistance : collectibleSpringDistance;
         springJoint.dampingRatio = springDampingRatio;
         springJoint.frequency = springFrequency;
         // Draw the line renderer
