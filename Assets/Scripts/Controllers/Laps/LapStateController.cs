@@ -10,6 +10,9 @@ namespace Controllers {
         private int _currentLap = 0;
         private int _currentMarker = 0;
         
+        // For the lap speed-up feature
+        private bool _willSpeedUpNextLap;
+        
         private List<StateChangeSubscriber> _subscribers = new List<StateChangeSubscriber>();
         
         private static LapStateController _instance;
@@ -46,8 +49,12 @@ namespace Controllers {
 
         private void CompleteLap() {
             Debug.Log($"Lap {_currentLap} completed!");
+            if (_willSpeedUpNextLap) {
+                RiverController.GetInstance().SpeedUp();
+            }
             _currentLap += 1;
             _currentMarker = 0;
+            _willSpeedUpNextLap = true;
             NotifyLapChangeSubscribers();
         }
         
@@ -69,6 +76,10 @@ namespace Controllers {
 
         public int GetLapNumber() {
             return _currentLap;
+        }
+
+        public void SetSpeedUp(bool speedUp) {
+            this._willSpeedUpNextLap = speedUp;
         }
         
     }

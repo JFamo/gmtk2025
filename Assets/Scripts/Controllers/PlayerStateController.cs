@@ -6,6 +6,7 @@ using UnityEngine;
 
 public class PlayerStateController : MonoBehaviour {
     public int startingHealth = 3;
+    public GameObject playerObject;
     
     private int health;
     private int drinks = 0;
@@ -68,6 +69,10 @@ public class PlayerStateController : MonoBehaviour {
     public void AddHealth(int amount) {
         health += amount;
         NotifyHealthChangeSubscribers();
+    }
+
+    public GameObject GetPlayerGameObject() {
+        return playerObject;
     }
 
     private void NotifyHealthChangeSubscribers() {

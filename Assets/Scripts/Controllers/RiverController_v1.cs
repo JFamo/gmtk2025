@@ -7,6 +7,7 @@ using UnityEngine;
 // Eventually, let's put some gameobjects in the scene that define the flow then use some efficient way to find the K-Nearest Neighbors and average their flow.
 public class RiverController_v1 : RiverController {
     public float baseSpeed = 0.5f;
+    public float speedUpFactor = 1.2f;
     public Vector2 riverCenter = new Vector2(-38.0f, 10.0f);    
     
     private void Awake() {
@@ -36,5 +37,10 @@ public class RiverController_v1 : RiverController {
         Vector2 direction = GetRiverDirectionAtPoint(point);
         float force = GetRiverForceAtPoint(point);
         return direction * force;
+    }
+
+    public override void SpeedUp() {
+        baseSpeed = baseSpeed * speedUpFactor;
+        Debug.Log($"River speed increased to {baseSpeed}");
     }
 }
