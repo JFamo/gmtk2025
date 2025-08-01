@@ -296,7 +296,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lassoMaxDistance: 10
+  lassoCastSpeed: 50
   missShotDisplayDurationSecs: 0.25
   springFrequency: 0.5
   springDampingRatio: 0.5
-  springDistance: 3
+  civilianSpringDistance: 3
+  collectibleSpringDistance: 1
