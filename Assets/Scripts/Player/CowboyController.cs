@@ -58,11 +58,11 @@ public class CowboyController : MonoBehaviour
                 Random.Range(-drunkDirectionMultiplier, drunkDirectionMultiplier),
                 Random.Range(-drunkDirectionMultiplier, drunkDirectionMultiplier),
                 0f
-            ).normalized;
+            );
             effectiveSpeed *= Mathf.Pow(drunkSpeedMultiplier, drinks);
         }
         
         // Apply the movement force
-        rb.AddForce(direction * effectiveSpeed, ForceMode2D.Impulse);
+        rb.AddForce(direction.normalized * effectiveSpeed, ForceMode2D.Impulse);
     }
 }
