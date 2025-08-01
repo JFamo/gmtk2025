@@ -1,6 +1,8 @@
 using UnityEngine;
 
 namespace Controllers.Laps {
+    
+    // This is only for a marker in the world that increments the lap. The actual state is handled in LapStateController
     public class LapTracker : MonoBehaviour {
 
         public int markerNumber;
