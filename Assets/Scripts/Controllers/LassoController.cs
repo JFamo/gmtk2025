@@ -70,6 +70,7 @@ public class LassoController : MonoBehaviour
                 if (distance <= lassoMaxDistance)
                 {
                     AttachLasso(hit.collider.GetComponent<Rigidbody2D>());
+                    return;
                 }
             }
             else
@@ -79,9 +80,10 @@ public class LassoController : MonoBehaviour
         }
         else
         {
-            StartCoroutine(ShowMissedShot(clickPosition));
             Debug.Log("Lasso Missed: no collider was hit");
         }
+        // Object too far, object uninteractable, or no object hit
+        StartCoroutine(ShowMissedShot(clickPosition));
     }
 
     void AttachLasso(Rigidbody2D targetRb)
