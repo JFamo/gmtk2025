@@ -49,7 +49,7 @@ public class PlayerStateController : MonoBehaviour {
     public void AddDrink() {
         drinks++;
         NotifyDrinkChangeSubscribers();
-    }
+    } 
     
     public int GetDrinks() {
         return drinks;
