@@ -25,6 +25,7 @@ namespace Dialog {
         private int selectedOption;
         private bool hasRenderedOptions = false;
         private List<GameObject> options = new List<GameObject>();
+        private List<DialogOption> dialogOptions = new List<DialogOption>();
         
         // Singleton instance
         private static DialogPanelController _instance;
@@ -60,6 +61,9 @@ namespace Dialog {
                 }
 
                 if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.D)) {
+                    // Get selected option
+                    DialogOption selected = dialogOptions[selectedOption];
+                    selected.GetSelectHandler().HandleOptionSelected(dialogOptions[selectedOption].GetContext());
                     CloseDialog();
                 }
             }
@@ -94,6 +98,7 @@ namespace Dialog {
                 TMP_Text optionText = option.GetComponentInChildren<TMP_Text>();
                 optionText.text = dialogInstance.options[i].optionText;
                 options.Add(option);
+                dialogOptions.Add(dialogInstance.options[i]);
             }
 
             ColorSelectedOption();
@@ -111,6 +116,7 @@ namespace Dialog {
                 Destroy(opt);
             }
             options.Clear();
+            dialogOptions.Clear();
         }
 
         private void ColorSelectedOption() {
