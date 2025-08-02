@@ -388,8 +388,5 @@ MonoBehaviour:
   springDampingRatio: 0.5
   civilianSpringDistance: 3
   collectibleSpringDistance: 1
-<<<<<<< HEAD
-=======
   passiveSprite: {fileID: 21300000, guid: ba3f505518a194eb1ba819a8f747a2a3, type: 3}
   lassoSprite: {fileID: 21300000, guid: 1908868054e3245b99ae2d186cc1c8a6, type: 3}
->>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
