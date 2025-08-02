@@ -43,4 +43,9 @@ public class RiverController_v1 : RiverController {
         baseSpeed = baseSpeed * speedUpFactor;
         Debug.Log($"River speed increased to {baseSpeed}");
     }
+
+    public override float GetBaseSpeed()
+    {
+        return baseSpeed;
+    }
 }

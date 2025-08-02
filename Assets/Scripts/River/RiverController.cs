@@ -21,4 +21,6 @@ public abstract class RiverController : MonoBehaviour {
     public abstract Vector2 GetRiverForceVectorAtPoint(Vector3 point);
 
     public abstract void SpeedUp();
+    
+    public abstract float GetBaseSpeed();
 }
