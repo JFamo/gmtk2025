@@ -18987,6 +18987,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Waterfall
       objectReference: {fileID: 0}
+    - target: {fileID: 1375240002822986247, guid: 04e560ef4458f1f41aa4be15bcc7f21e, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3114491921950155171, guid: 04e560ef4458f1f41aa4be15bcc7f21e, type: 3}
       propertyPath: m_LocalPosition.x
       value: 78.18
