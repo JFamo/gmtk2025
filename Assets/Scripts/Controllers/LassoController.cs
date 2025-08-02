@@ -8,11 +8,7 @@ public class LassoController : MonoBehaviour
     public float lassoMaxDistance = 10f;
     [Tooltip("How fast the lasso line extends outwards.")]
     public float lassoCastSpeed = 50f;
-<<<<<<< HEAD
-    [Tooltip("How long the line shows when a grapple misses.")]
-=======
     [Tooltip("How long the line shows when a lasso misses.")]
->>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
     public float missShotDisplayDurationSecs = 0.25f;
 
     [Header("Spring Joint Settings")]
@@ -33,10 +29,7 @@ public class LassoController : MonoBehaviour
     private LineRenderer lineRenderer;
     private SpringJoint2D springJoint;
     private Coroutine lassoCastCoroutine;
-<<<<<<< HEAD
-=======
     private bool isLassoing;
->>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
 
     void Start()
     {
@@ -126,11 +119,7 @@ public class LassoController : MonoBehaviour
 
     IEnumerator AnimateLasso(Vector3 clickPos, Rigidbody2D targetRb)
     {
-<<<<<<< HEAD
-        lineRenderer.enabled = true;
-=======
         SetLassoing(true);
->>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
         Vector2 startPoint = transform.position;
         Vector2 currentPosition = startPoint;
         
@@ -165,11 +154,7 @@ public class LassoController : MonoBehaviour
         else
         {
             yield return new WaitForSeconds(missShotDisplayDurationSecs);
-<<<<<<< HEAD
-            lineRenderer.enabled = false;
-=======
             SetLassoing(false);
->>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
         }
         
         // Mark the coroutine as finished
