@@ -21,10 +21,15 @@ public class LassoController : MonoBehaviour
     public float civilianSpringDistance = 3f;
     [Tooltip("The resting distance of the spring for collectibles")]
     public float collectibleSpringDistance = 1f;
+
+    [Header("Animation Sprites v1")] 
+    public Sprite passiveSprite;
+    public Sprite lassoSprite;
     
     private LineRenderer lineRenderer;
     private SpringJoint2D springJoint;
     private Coroutine lassoCastCoroutine;
+    private bool isLassoing;
 
     void Start()
     {
@@ -33,7 +38,7 @@ public class LassoController : MonoBehaviour
 
         // Setup LineRenderer
         lineRenderer.positionCount = 2;
-        lineRenderer.enabled = false;
+        SetLassoing(false);
     }
 
     void Update()
@@ -51,6 +56,19 @@ public class LassoController : MonoBehaviour
         if (springJoint)
         {
             UpdateLineRenderer();
+        }
+    }
+    
+    // Function to set sprite based on lasso state
+    public void SetLassoSprite(bool isLassoing)
+    {
+        if (isLassoing)
+        {
+            GetComponentsInChildren<SpriteRenderer>()[0].sprite = lassoSprite;
+        }
+        else
+        {
+            GetComponentsInChildren<SpriteRenderer>()[0].sprite = passiveSprite;
         }
     }
 
@@ -101,7 +119,7 @@ public class LassoController : MonoBehaviour
 
     IEnumerator AnimateLasso(Vector3 clickPos, Rigidbody2D targetRb)
     {
-        lineRenderer.enabled = true;
+        SetLassoing(true);
         Vector2 startPoint = transform.position;
         Vector2 currentPosition = startPoint;
         
@@ -136,7 +154,7 @@ public class LassoController : MonoBehaviour
         else
         {
             yield return new WaitForSeconds(missShotDisplayDurationSecs);
-            lineRenderer.enabled = false;
+            SetLassoing(false);
         }
         
         // Mark the coroutine as finished
@@ -148,7 +166,7 @@ public class LassoController : MonoBehaviour
         if (springJoint)
         {
             Destroy(springJoint);
-            lineRenderer.enabled = false;
+            SetLassoing(false);
             Debug.Log("Lasso detached");
         }
     }
@@ -161,7 +179,7 @@ public class LassoController : MonoBehaviour
     
     IEnumerator ShowMissedShot(Vector3 clickPosition)
     {
-        lineRenderer.enabled = true;
+        SetLassoing(true);
         lineRenderer.SetPosition(0, transform.position);
         
         float distance = Vector3.Distance(transform.position, clickPosition);
@@ -180,7 +198,14 @@ public class LassoController : MonoBehaviour
         // Only hide the line if the player hasn't successfully lassoed in the meantime
         if (!springJoint)
         {
-            lineRenderer.enabled = false;
+            SetLassoing(false);
         }
+    }
+    
+    private void SetLassoing(bool isLassoing)
+    {
+        this.isLassoing = isLassoing;
+        lineRenderer.enabled = isLassoing;
+        SetLassoSprite(isLassoing);
     }
 }
