@@ -63,7 +63,10 @@ namespace Dialog {
                 if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.D)) {
                     // Get selected option
                     DialogOption selected = dialogOptions[selectedOption];
-                    selected.GetSelectHandler().HandleOptionSelected(dialogOptions[selectedOption].GetContext());
+                    foreach (IDialogOptionSelectHandler handler in selected.GetSelectHandlers())
+                    {
+                        handler.HandleOptionSelected(dialogOptions[selectedOption].GetContext());
+                    }
                     CloseDialog();
                 }
             }

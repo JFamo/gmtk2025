@@ -5,6 +5,8 @@ namespace Quests
         public QuestKeys GetKey();
         
         public void SetQuestState(QuestStates state);
+
+        public QuestStates GetQuestState();
     }
 
     public enum QuestKeys

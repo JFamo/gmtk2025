@@ -6,11 +6,13 @@ namespace Dialog
     {
         private QuestKeys _questKey;
         private QuestStates _questState;
+        private DialogInstance _followUpDialog;
         
-        public DialogOptionContext(QuestKeys questKey, QuestStates questState)
+        public DialogOptionContext(QuestKeys questKey, QuestStates questState, DialogInstance followUpDialog)
         {
             _questKey = questKey;
             _questState = questState;
+            _followUpDialog = followUpDialog;
         }
 
         public DialogOptionContext()
@@ -26,6 +28,11 @@ namespace Dialog
         public QuestStates GetQuestState()
         {
             return _questState;
+        }
+
+        public DialogInstance GetFollowUpDialog()
+        {
+            return _followUpDialog;
         }
     }
 }
