@@ -8,7 +8,11 @@ public class LassoController : MonoBehaviour
     public float lassoMaxDistance = 10f;
     [Tooltip("How fast the lasso line extends outwards.")]
     public float lassoCastSpeed = 50f;
+<<<<<<< HEAD
     [Tooltip("How long the line shows when a grapple misses.")]
+=======
+    [Tooltip("How long the line shows when a lasso misses.")]
+>>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
     public float missShotDisplayDurationSecs = 0.25f;
 
     [Header("Spring Joint Settings")]
@@ -21,10 +25,18 @@ public class LassoController : MonoBehaviour
     public float civilianSpringDistance = 3f;
     [Tooltip("The resting distance of the spring for collectibles")]
     public float collectibleSpringDistance = 1f;
+
+    [Header("Animation Sprites v1")] 
+    public Sprite passiveSprite;
+    public Sprite lassoSprite;
     
     private LineRenderer lineRenderer;
     private SpringJoint2D springJoint;
     private Coroutine lassoCastCoroutine;
+<<<<<<< HEAD
+=======
+    private bool isLassoing;
+>>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
 
     void Start()
     {
@@ -33,7 +45,7 @@ public class LassoController : MonoBehaviour
 
         // Setup LineRenderer
         lineRenderer.positionCount = 2;
-        lineRenderer.enabled = false;
+        SetLassoing(false);
     }
 
     void Update()
@@ -51,6 +63,19 @@ public class LassoController : MonoBehaviour
         if (springJoint)
         {
             UpdateLineRenderer();
+        }
+    }
+    
+    // Function to set sprite based on lasso state
+    public void SetLassoSprite(bool isLassoing)
+    {
+        if (isLassoing)
+        {
+            GetComponentsInChildren<SpriteRenderer>()[0].sprite = lassoSprite;
+        }
+        else
+        {
+            GetComponentsInChildren<SpriteRenderer>()[0].sprite = passiveSprite;
         }
     }
 
@@ -101,7 +126,11 @@ public class LassoController : MonoBehaviour
 
     IEnumerator AnimateLasso(Vector3 clickPos, Rigidbody2D targetRb)
     {
+<<<<<<< HEAD
         lineRenderer.enabled = true;
+=======
+        SetLassoing(true);
+>>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
         Vector2 startPoint = transform.position;
         Vector2 currentPosition = startPoint;
         
@@ -136,7 +165,11 @@ public class LassoController : MonoBehaviour
         else
         {
             yield return new WaitForSeconds(missShotDisplayDurationSecs);
+<<<<<<< HEAD
             lineRenderer.enabled = false;
+=======
+            SetLassoing(false);
+>>>>>>> 04776d62831d2d593535de4a251ec7ce971abbc6
         }
         
         // Mark the coroutine as finished
@@ -148,20 +181,25 @@ public class LassoController : MonoBehaviour
         if (springJoint)
         {
             Destroy(springJoint);
-            lineRenderer.enabled = false;
+            SetLassoing(false);
             Debug.Log("Lasso detached");
         }
     }
 
     void UpdateLineRenderer()
     {
+        if (springJoint.connectedBody == null)
+        {
+            DetachLasso();
+            return;
+        }
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, springJoint.connectedBody.transform.position);
     }
     
     IEnumerator ShowMissedShot(Vector3 clickPosition)
     {
-        lineRenderer.enabled = true;
+        SetLassoing(true);
         lineRenderer.SetPosition(0, transform.position);
         
         float distance = Vector3.Distance(transform.position, clickPosition);
@@ -177,10 +215,17 @@ public class LassoController : MonoBehaviour
 
         yield return new WaitForSeconds(missShotDisplayDurationSecs);
 
-        // Only hide the line if the player hasn't successfully grappled in the meantime
+        // Only hide the line if the player hasn't successfully lassoed in the meantime
         if (!springJoint)
         {
-            lineRenderer.enabled = false;
+            SetLassoing(false);
         }
+    }
+    
+    private void SetLassoing(bool isLassoing)
+    {
+        this.isLassoing = isLassoing;
+        lineRenderer.enabled = isLassoing;
+        SetLassoSprite(isLassoing);
     }
 }

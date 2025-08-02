@@ -1,12 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using Controllers;
+using Controllers.ui;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerStateController : MonoBehaviour {
     public int startingHealth = 3;
     public GameObject playerObject;
+    public GameOverDialogController gameOverDialogController;
     
     private int health;
     private int drinks = 0;
@@ -88,6 +90,9 @@ public class PlayerStateController : MonoBehaviour {
     }
 
     private void HandlePlayerDeath() {
-        Debug.Log("!!!Player Died!!!");
+        Debug.Log("Player has died.");
+        // Stop time and show game over dialog
+        Time.timeScale = 0f;
+        gameOverDialogController.ShowGameOverDialog();
     }
 }

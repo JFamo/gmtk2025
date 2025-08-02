@@ -11,6 +11,7 @@ public class CowboyController : MonoBehaviour
     public int drunkThreshold = 0; // Number of drinks to start applying drunk modifiers
     public float drunkSpeedMultiplier = 0.95f;
     public float drunkDirectionMultiplier = 0.5f; // How much the direction is randomized when drunk
+    public float drunkRotationMultiplier = 1.0f; // How much the rotation is randomized when drunk
     
     private Rigidbody2D rb;
     
@@ -60,6 +61,10 @@ public class CowboyController : MonoBehaviour
                 0f
             );
             effectiveSpeed *= Mathf.Pow(drunkSpeedMultiplier, drinks);
+            
+            // Apply some slight rotational force directly correlated to the number of drinks and speed
+            float rotationForce = drinks * drunkRotationMultiplier * effectiveSpeed;
+            rb.AddTorque(rotationForce * Random.Range(-1f, 1f), ForceMode2D.Impulse);
         }
         
         // Apply the movement force
