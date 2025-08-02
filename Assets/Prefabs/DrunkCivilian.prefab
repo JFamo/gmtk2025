@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 858554052390240713}
   - component: {fileID: 5374533664814982280}
   - component: {fileID: -2651581895859416212}
+  - component: {fileID: 8386531872855033760}
   m_Layer: 0
   m_Name: DrunkCivilian
   m_TagString: Civilian
@@ -174,3 +175,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59eca25b239b5ec499c21b1e5a3d35db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8386531872855033760
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2841825393423679683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 21514f7557a24298a3e923930277e450, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  range: 10
+  interactKey: 101
+  myName: John Jacob Jingleheimer Schmidt
+  myDialog: Hey that's my name
+  myPicture: {fileID: 21300000, guid: 57a859f5fb5318b4baf8e80811a301f1, type: 3}
