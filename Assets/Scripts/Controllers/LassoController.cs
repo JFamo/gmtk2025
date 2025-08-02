@@ -173,6 +173,11 @@ public class LassoController : MonoBehaviour
 
     void UpdateLineRenderer()
     {
+        if (springJoint.connectedBody == null)
+        {
+            DetachLasso();
+            return;
+        }
         lineRenderer.SetPosition(0, transform.position);
         lineRenderer.SetPosition(1, springJoint.connectedBody.transform.position);
     }
