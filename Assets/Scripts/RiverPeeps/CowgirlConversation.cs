@@ -117,11 +117,19 @@ namespace Objects {
         private DialogInstance GetSuccess()
         {
             DialogInstance followUp = PlayerStateController.GetInstance().GetHealth() < 3 ? GetHeal() : null;
+            var handlers = new List<IDialogOptionSelectHandler>
+            {
+                new SetQuestStateDialogOptionHandler()
+            };
+            if (followUp != null)
+            {
+                handlers.Add(new LaunchDialogOptionSelectHandler());
+            }
             return new DialogInstance(myName, myPicture,
                 "I don't know, it just feels like we're somehow meant to be here together. I hope I see you again real soon.",
                 new List<DialogOption>
                 {
-                    new DialogOption("Well golly", new SetQuestStateDialogOptionHandler(), new DialogOptionContext(QuestKeys.COWGIRL_QUEST, QuestStates.COMPLETED, followUp))
+                    new DialogOption("Well golly", handlers, new DialogOptionContext(QuestKeys.COWGIRL_QUEST, QuestStates.COMPLETED, followUp))
                 });
         }
 
