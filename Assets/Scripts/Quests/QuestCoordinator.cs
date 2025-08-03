@@ -31,7 +31,8 @@ namespace Quests
         {
             _questStateControllers = new Dictionary<QuestKeys, IQuestStateController>
             {
-                { QuestKeys.WATER_GUN_KID_QUEST, new WaterGunKidQuestStateController() }
+                { QuestKeys.WATER_GUN_KID_QUEST, new WaterGunKidQuestStateController() },
+                { QuestKeys.MONK_QUEST, new MonkQuestStateController() }
             };
         }
         

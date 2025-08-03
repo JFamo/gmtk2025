@@ -10,7 +10,6 @@ namespace Objects
     {
         public float range;
         public string myName;
-        public string myDialog;
         public Sprite myPicture;
 
         protected override float GetRange()
@@ -45,17 +44,23 @@ namespace Objects
 
         private DialogInstance ChallengeDialog()
         {
-            return new DialogInstance(myName, myPicture, myDialog, new List<DialogOption>
+            var successOption = new DialogOption("If I give you a drink, will you play somewhere else?",
+                new List<IDialogOptionSelectHandler>
+                    { new SetQuestStateDialogOptionHandler(), new LaunchDialogOptionSelectHandler() },
+                new DialogOptionContext(QuestKeys.WATER_GUN_KID_QUEST, QuestStates.COMPLETED, SuccessDialog()));
+            var options = new List<DialogOption>
             {
-                new DialogOption("never play with water guns ever again",
-                    new List<IDialogOptionSelectHandler>
-                        { new SetQuestStateDialogOptionHandler(), new LaunchDialogOptionSelectHandler() },
-                    new DialogOptionContext(QuestKeys.WATER_GUN_KID_QUEST, QuestStates.COMPLETED, SuccessDialog())),
-                new DialogOption("oh ok cool",
+
+                new DialogOption("Don't play with guns, kid",
                     new List<IDialogOptionSelectHandler>
                         { new SetQuestStateDialogOptionHandler(), new LaunchDialogOptionSelectHandler() },
                     new DialogOptionContext(QuestKeys.WATER_GUN_KID_QUEST, QuestStates.FAILED, FailureDialog())),
-            });
+            };
+            if(PlayerStateController.GetInstance().GetDrinks() > 0)
+            {
+                options.Add(successOption);
+            }
+            return new DialogInstance(myName, myPicture, "My Mom said I can have a Mr. Beast Feastable if I leave her alone for 10 minutes!", options);
         }
 
         private QuestStates GetQuestState()
@@ -66,19 +71,19 @@ namespace Objects
 
         private DialogInstance SuccessDialog()
         {
-            return new DialogInstance(myName, myPicture, "Ok, since you seem like such a cool and easy-going person.",
+            return new DialogInstance(myName, myPicture, "Gee, thanks for this drink that suddenly doesn't have an alcohholic connotation!",
                 new List<DialogOption>
                 {
-                    new DialogOption("Ok goodbye.")
+                    new DialogOption("Bye, kid")
                 });
         }
 
         private DialogInstance FailureDialog()
         {
-            return new DialogInstance(myName, myPicture, "No way old man! We're gonna play with guns!",
+            return new DialogInstance(myName, myPicture, "Who shows up to a water park in a full cowboy outfit anyway?",
                 new List<DialogOption>
                 {
-                    new DialogOption("Ok goodbye.")
+                    new DialogOption("...")
                 });
         }
 

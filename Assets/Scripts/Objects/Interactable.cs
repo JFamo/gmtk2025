@@ -11,6 +11,12 @@ public abstract class Interactable : MonoBehaviour
 
     public static Interactable nearestInteractable;
     public static float nearestInteractableDistance = float.MaxValue;
+
+
+    void Start()
+    {
+        lastPromptCheckTime = Random.Range(0.0f, 0.25f);
+    }
     
     private void Update() {
         lastPromptCheckTime += Time.deltaTime;

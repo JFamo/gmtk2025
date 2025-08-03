@@ -8,6 +8,8 @@ namespace Objects {
         public float range;
         public Sprite lifeguardPicture;
         public Sprite myPicture;
+
+        private LaunchDialogOptionSelectHandler launchDialogOptionSelectHandler = new LaunchDialogOptionSelectHandler();
     
         protected override float GetRange() {
             return range;
@@ -29,7 +31,7 @@ namespace Objects {
                 "Saaah dude! You look like a totally tubular cowboy dude who I've just met, but can I let you in on a little secret?",
                 new List<DialogOption>
                 {
-                    new DialogOption("Howdy", new LaunchDialogOptionSelectHandler(),
+                    new DialogOption("Howdy", launchDialogOptionSelectHandler,
                         new DialogOptionContext(GetGoalDialog())
                     )
                 });
@@ -38,10 +40,10 @@ namespace Objects {
         private DialogInstance GetGoalDialog()
         {
             return new DialogInstance("Larry", lifeguardPicture,
-                "We've got this little conveniently loop-themed challenge here. The fastest lifeguard to complete 10 laps in the pool wins our super ripper prize...",
+                "We've got this little conveniently loop-themed challenge here. The fastest lifeguard to complete 5 laps in the pool wins our super ripper prize...",
                 new List<DialogOption>
                 {
-                    new DialogOption("...", new LaunchDialogOptionSelectHandler(),
+                    new DialogOption("...", launchDialogOptionSelectHandler,
                         new DialogOptionContext(GetDrinksDialog())
                     )
                 });
@@ -50,11 +52,11 @@ namespace Objects {
         private DialogInstance GetDrinksDialog()
         {
             return new DialogInstance("Larry", lifeguardPicture,
-                "...and for each drink they can pound while doing it, they'll get, like, 10 seconds off their time.",
+                "...and for each drink they can pound while doing it, they'll get, like, 5 seconds off their time.",
                 new List<DialogOption>
                 {
-                    new DialogOption("One thing...", new LaunchDialogOptionSelectHandler(),
-                        new DialogOptionContext(GetDrinksDialog())
+                    new DialogOption("One thing...", launchDialogOptionSelectHandler,
+                        new DialogOptionContext(GetCloseDialog())
                     )
                 });
         }

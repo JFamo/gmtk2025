@@ -11,6 +11,7 @@ namespace Quests
 
     public enum QuestKeys
     {
-        WATER_GUN_KID_QUEST
+        WATER_GUN_KID_QUEST,
+        MONK_QUEST
     }
 }

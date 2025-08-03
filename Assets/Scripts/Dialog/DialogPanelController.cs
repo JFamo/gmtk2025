@@ -63,16 +63,26 @@ namespace Dialog {
                 if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.D)) {
                     // Get selected option
                     DialogOption selected = dialogOptions[selectedOption];
+                    bool hasFollowup = false;
                     foreach (IDialogOptionSelectHandler handler in selected.GetSelectHandlers())
                     {
                         handler.HandleOptionSelected(dialogOptions[selectedOption].GetContext());
+                        if (handler is LaunchDialogOptionSelectHandler)
+                        {
+                            hasFollowup = true;
+                        }
                     }
-                    CloseDialog();
+
+                    if (!hasFollowup)
+                    {
+                        CloseDialog();
+                    }
                 }
             }
         }
 
         public void LaunchDialog(DialogInstance dialogInstance) {
+            ClearOptions();
             dialogPanel.SetActive(true);
             dialogImage.sprite = dialogInstance.image;
             dialogName.text = dialogInstance.name;
@@ -102,6 +112,28 @@ namespace Dialog {
                 optionText.text = dialogInstance.options[i].optionText;
                 options.Add(option);
                 dialogOptions.Add(dialogInstance.options[i]);
+                
+                // Setup button click to trigger handlers
+                var button = option.GetComponent<UnityEngine.UI.Button>();
+                int optionIndex = i; // Capture index for closure
+                if (button != null) {
+                    button.onClick.AddListener(() => {
+                        DialogOption selected = dialogOptions[optionIndex];
+                        bool hasFollowup = false;
+                        foreach (IDialogOptionSelectHandler handler in selected.GetSelectHandlers())
+                        {
+                            handler.HandleOptionSelected(selected.GetContext());
+                            if (handler is LaunchDialogOptionSelectHandler)
+                            {
+                                hasFollowup = true;
+                            }
+                        }
+                        if (!hasFollowup)
+                        {
+                            CloseDialog();
+                        }
+                    });
+                }
             }
 
             ColorSelectedOption();

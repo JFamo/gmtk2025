@@ -23,10 +23,24 @@ public class LapConditionalObject : StateChangeSubscriber {
     }
 
     public override void OnLapChange(int newValue) {
+        // Defer to QuestConditionalObject if present
+        var questConditional = GetComponent<QuestConditionalObject>();
         if (appearsAfterLap && newValue > appearAfterLap) {
+            if (questConditional != null) {
+                if (questConditional.disappearAfterQuest && gameObject.activeInHierarchy)
+                {
+                    return;
+                }
+            }
             gameObject.SetActive(true);
         }
         else if (disppearAfterLap && newValue > disappearAfterLap) {
+            if (questConditional != null) {
+                if (questConditional.appearsAfterQuest && !gameObject.activeInHierarchy)
+                {
+                    return;
+                }
+            }
             gameObject.SetActive(false);
         }
     }
