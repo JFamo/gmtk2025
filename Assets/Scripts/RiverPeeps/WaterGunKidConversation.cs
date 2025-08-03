@@ -9,7 +9,6 @@ namespace Objects
     public class WaterGunkidConversation : Interactable
     {
         public float range;
-        public KeyCode interactKey;
         public string myName;
         public string myDialog;
         public Sprite myPicture;
