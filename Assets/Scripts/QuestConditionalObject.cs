@@ -22,9 +22,11 @@ public class QuestConditionalObject : StateChangeSubscriber {
 
     public override void OnLapChange(int newValue) {
         if (appearsAfterQuest && QuestCoordinator.GetInstance().GetQuestStateController(questKey).GetQuestState() == appearState) {
+            Debug.Log("Setting active from quest " + questKey);
             gameObject.SetActive(true);
         }
         else if (disappearAfterQuest && QuestCoordinator.GetInstance().GetQuestStateController(questKey).GetQuestState() == disappearState) {
+            Debug.Log("Setting inactive from quest " + questKey);
             gameObject.SetActive(false);
         }
     }

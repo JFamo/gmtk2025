@@ -46,7 +46,7 @@ namespace Objects
         {
             var successOption = new DialogOption("If I give you a drink, will you play somewhere else?",
                 new List<IDialogOptionSelectHandler>
-                    { new SetQuestStateDialogOptionHandler(), new LaunchDialogOptionSelectHandler() },
+                    { new SetQuestStateDialogOptionHandler(), new RemoveDrinkOptionSelectHandler(), new LaunchDialogOptionSelectHandler() },
                 new DialogOptionContext(QuestKeys.WATER_GUN_KID_QUEST, QuestStates.COMPLETED, SuccessDialog()));
             var options = new List<DialogOption>
             {

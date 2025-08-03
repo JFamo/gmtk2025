@@ -49,7 +49,13 @@ public class PlayerStateController : MonoBehaviour {
     public void AddDrink() {
         drinks++;
         NotifyDrinkChangeSubscribers();
-    } 
+    }
+
+    public void RemoveDrink()
+    {
+        drinks--;
+        NotifyDrinkChangeSubscribers();
+    }
     
     public int GetDrinks() {
         return drinks;
@@ -70,6 +76,11 @@ public class PlayerStateController : MonoBehaviour {
     
     public void AddHealth(int amount) {
         health += amount;
+        NotifyHealthChangeSubscribers();
+    }
+    
+    public void MaxHealth() {
+        health = startingHealth;
         NotifyHealthChangeSubscribers();
     }
 

@@ -27,7 +27,7 @@ public class LapConditionalObject : StateChangeSubscriber {
         var questConditional = GetComponent<QuestConditionalObject>();
         if (appearsAfterLap && newValue > appearAfterLap) {
             if (questConditional != null) {
-                if (questConditional.disappearAfterQuest && gameObject.activeInHierarchy)
+                if (questConditional.disappearAfterQuest && gameObject.activeSelf)
                 {
                     return;
                 }
@@ -36,7 +36,7 @@ public class LapConditionalObject : StateChangeSubscriber {
         }
         else if (disppearAfterLap && newValue > disappearAfterLap) {
             if (questConditional != null) {
-                if (questConditional.appearsAfterQuest && !gameObject.activeInHierarchy)
+                if (questConditional.appearsAfterQuest && !gameObject.activeSelf)
                 {
                     return;
                 }

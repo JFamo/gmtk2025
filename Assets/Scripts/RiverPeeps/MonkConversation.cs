@@ -26,9 +26,7 @@ namespace Objects {
             if (questState == QuestStates.IN_PROGRESS)
             {
                 dialog = GetCost();
-            }
-
-            if (questState == QuestStates.COMPLETED || questState == QuestStates.FAILED)
+            } else if (questState == QuestStates.COMPLETED || questState == QuestStates.FAILED)
             {
                 dialog = GetPassive();
             }
@@ -93,9 +91,18 @@ namespace Objects {
         private DialogInstance GetCost()
         {
             var options = new List<DialogOption>();
+            var successHandlers = new List<IDialogOptionSelectHandler>
+            {
+                new SetQuestStateDialogOptionHandler(),
+                new RemoveDrinkOptionSelectHandler(),
+                new RemoveDrinkOptionSelectHandler(),
+                new RemoveDrinkOptionSelectHandler(),
+                new RemoveDrinkOptionSelectHandler(),
+                new RemoveDrinkOptionSelectHandler()
+            };
             if (PlayerStateController.GetInstance().GetDrinks() > 4)
             {
-                options.Add(new DialogOption("Let's do it", new SetQuestStateDialogOptionHandler(), new DialogOptionContext(QuestKeys.MONK_QUEST, QuestStates.COMPLETED, null)));
+                options.Add(new DialogOption("Let's do it", successHandlers, new DialogOptionContext(QuestKeys.MONK_QUEST, QuestStates.COMPLETED, null)));
                 options.Add(new DialogOption("I'm going to study these Mai Tai myself", new SetQuestStateDialogOptionHandler(), new DialogOptionContext(QuestKeys.MONK_QUEST, QuestStates.FAILED, null)));
             }
             else

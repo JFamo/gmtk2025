@@ -24,7 +24,7 @@ namespace Objects {
             QuestStates questState = QuestCoordinator.GetInstance().GetQuestStateController(QuestKeys.COWGIRL_QUEST).GetQuestState();
             if (questState == QuestStates.COMPLETED)
             {
-                dialog = GetRomance();
+                dialog = PlayerStateController.GetInstance().GetHealth() > 3 ? GetHeal() : GetRomance();
             }
             else if(questState == QuestStates.FAILED)
             {
@@ -59,6 +59,16 @@ namespace Objects {
                 new List<DialogOption>
                 {
                     new DialogOption("Golly")
+                });
+        }
+
+        private DialogInstance GetHeal()
+        {
+            return new DialogInstance(myName, myPicture,
+                "Let me dry off that hat for you, partner",
+                new List<DialogOption>
+                {
+                    new DialogOption("Thank you kindly", new AddHealthOptionSelectHandler(), new DialogOptionContext())
                 });
         }
         
@@ -106,11 +116,12 @@ namespace Objects {
         
         private DialogInstance GetSuccess()
         {
+            DialogInstance followUp = PlayerStateController.GetInstance().GetHealth() > 3 ? GetHeal() : null;
             return new DialogInstance(myName, myPicture,
                 "I don't know, it just feels like we're somehow meant to be here together. I hope I see you again real soon.",
                 new List<DialogOption>
                 {
-                    new DialogOption("Well golly", new SetQuestStateDialogOptionHandler(), new DialogOptionContext(QuestKeys.COWGIRL_QUEST, QuestStates.COMPLETED, null))
+                    new DialogOption("Well golly", new SetQuestStateDialogOptionHandler(), new DialogOptionContext(QuestKeys.COWGIRL_QUEST, QuestStates.COMPLETED, followUp))
                 });
         }
 
