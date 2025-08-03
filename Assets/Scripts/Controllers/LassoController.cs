@@ -87,7 +87,7 @@ public class LassoController : MonoBehaviour
         float distanceThrown = Vector2.Distance(transform.position, clickPosition);
         if (hit.collider != null) // Set interactable tag on target objects
         {
-            if (hit.collider.CompareTag("Civilian") || hit.collider.CompareTag("Collectible"))
+            if (hit.collider.CompareTag("Civilian") || hit.collider.CompareTag("Collectible") || hit.collider.CompareTag("Doodad"))
             {
                 Debug.Log($"Clicked object: {hit.collider.name} {distanceThrown} units away");
                 if (distanceThrown <= lassoMaxDistance)
