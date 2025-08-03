@@ -9,6 +9,8 @@ namespace Dialog {
 
         [Header("Links and Prefabs")]
         public GameObject dialogPanel;
+
+        public GameObject dialogFakePanel;
         public GameObject optionPrefab;
         public UnityEngine.UI.Image dialogImage;
         public TMP_Text dialogText;
@@ -45,6 +47,7 @@ namespace Dialog {
                 Destroy(gameObject);
             }
             dialogPanel.SetActive(false);
+            dialogFakePanel.SetActive(false);
         }
 
         void Update() {
@@ -84,6 +87,7 @@ namespace Dialog {
         public void LaunchDialog(DialogInstance dialogInstance) {
             ClearOptions();
             dialogPanel.SetActive(true);
+            dialogFakePanel.SetActive(true);
             dialogImage.sprite = dialogInstance.image;
             dialogName.text = dialogInstance.name;
             StartCoroutine(PrintCharacters(dialogInstance));
@@ -93,6 +97,7 @@ namespace Dialog {
         public void CloseDialog() {
             ClearOptions();
             dialogPanel.SetActive(false);
+            dialogFakePanel.SetActive(false);
             Time.timeScale = 1; // Resume the game
         }
 

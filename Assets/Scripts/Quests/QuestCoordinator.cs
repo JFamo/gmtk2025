@@ -37,6 +37,22 @@ namespace Quests
                 { QuestKeys.ALIEN_QUEST, new MonkQuestStateController() }
             };
         }
+
+        public float GetCompletionPercentage()
+        {
+            // Iterate QuestKeys values
+            float totalQuests = _questStateControllers.Count;
+            float completedQuests = 0.0f;
+            foreach (var controller in _questStateControllers.Values)
+            {
+                if (controller.GetQuestState() != QuestStates.NOT_STARTED)
+                {
+                    completedQuests += 1.0f;
+                }
+            }
+
+            return completedQuests / totalQuests;
+        }
         
         public IQuestStateController GetQuestStateController(QuestKeys key)
         {

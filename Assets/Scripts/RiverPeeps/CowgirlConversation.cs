@@ -24,7 +24,7 @@ namespace Objects {
             QuestStates questState = QuestCoordinator.GetInstance().GetQuestStateController(QuestKeys.COWGIRL_QUEST).GetQuestState();
             if (questState == QuestStates.COMPLETED)
             {
-                dialog = PlayerStateController.GetInstance().GetHealth() > 3 ? GetHeal() : GetRomance();
+                dialog = PlayerStateController.GetInstance().GetHealth() < 3 ? GetHeal() : GetRomance();
             }
             else if(questState == QuestStates.FAILED)
             {
@@ -116,7 +116,7 @@ namespace Objects {
         
         private DialogInstance GetSuccess()
         {
-            DialogInstance followUp = PlayerStateController.GetInstance().GetHealth() > 3 ? GetHeal() : null;
+            DialogInstance followUp = PlayerStateController.GetInstance().GetHealth() < 3 ? GetHeal() : null;
             return new DialogInstance(myName, myPicture,
                 "I don't know, it just feels like we're somehow meant to be here together. I hope I see you again real soon.",
                 new List<DialogOption>

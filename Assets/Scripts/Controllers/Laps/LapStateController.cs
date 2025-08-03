@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Controllers.ui;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -6,6 +7,7 @@ namespace Controllers {
     public class LapStateController : MonoBehaviour {
 
         public int totalMarkers = 2;
+        public WinDialogController winDialogController;
         
         private int _currentLap = 0;
         private int _currentMarker = 0;
@@ -49,6 +51,12 @@ namespace Controllers {
 
         private void CompleteLap() {
             Debug.Log($"Lap {_currentLap} completed!");
+            if (_currentLap == 4)
+            {
+                Debug.Log("Won the game (unless you thought about the game");
+                Time.timeScale = 0;
+                winDialogController.ShowGameWin();
+            }
             if (_willSpeedUpNextLap) {
                 RiverController.GetInstance().SpeedUp();
             }

@@ -6,11 +6,15 @@ namespace Controllers.ui {
         public TMP_Text timeText;
 
         private void ShowTimeText() {
-            // Shows the time elapsed since game start in minutes:seconds format
+            timeText.text = GetTimeText();
+        }
+        
+        public string GetTimeText() {
+            // Returns the time elapsed since game start in minutes:seconds format
             float timeElapsed = Time.timeSinceLevelLoad;
             int minutes = Mathf.FloorToInt(timeElapsed / 60);
             int seconds = Mathf.FloorToInt(timeElapsed % 60);
-            timeText.text = $"{minutes:D2}:{seconds:D2}";
+            return $"{minutes:D2}:{seconds:D2}";
         }
 
         private void Update()
