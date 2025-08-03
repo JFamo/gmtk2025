@@ -8,6 +8,7 @@ TagManager:
   - Civilian
   - FlowZone
   - Doodad
+  - InstantCollectible
   layers:
   - Default
   - TransparentFX

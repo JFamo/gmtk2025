@@ -1,19 +1,28 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 namespace Controllers.ui {
     public class DrinkDisplayController : StateChangeSubscriber {
         public GameObject drinkIconPrefab;
         public Transform canvasParent;
+        public TMP_Text text;
         
         private List<GameObject> _drinkIcons;
         
         private void Start() {
             _drinkIcons = new List<GameObject>();
-            int health = PlayerStateController.GetInstance().GetDrinks();
-            ShowDrinkValue(health);
+            int drinks = PlayerStateController.GetInstance().GetDrinks();
+            // ShowDrinkValue(health);
+            ShowDrinkText(drinks);
             PlayerStateController.GetInstance().Subscribe(this);
+        }
+
+        private void ShowDrinkText(int amount)
+        {
+            // Show the drink text as "x Drinks"
+            text.text = "x " + amount;
         }
 
         private void ShowDrinkValue(int amount) {
@@ -36,7 +45,8 @@ namespace Controllers.ui {
         }
 
         public override void OnDrinkChange(int newValue) {
-            ShowDrinkValue(newValue);
+            // ShowDrinkValue(newValue);
+            ShowDrinkText(newValue);
         }
     }
 }

@@ -95,6 +95,14 @@ public class LassoController : MonoBehaviour
                     targetRb = hit.collider.gameObject.GetComponent<Rigidbody2D>();
                 }
             }
+            else if (hit.collider.CompareTag("InstantCollectible"))
+            {
+                Debug.Log($"Clicked object: {hit.collider.name} {distanceThrown} units away");
+                if (distanceThrown <= lassoMaxDistance)
+                {
+                    targetRb = hit.collider.gameObject.GetComponent<Rigidbody2D>();
+                }
+            }
             else
             {
                 Debug.Log($"Lasso Hit un-interactable object: {hit.collider.name}");
