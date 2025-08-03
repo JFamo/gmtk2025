@@ -19,6 +19,13 @@ namespace Dialog {
             _selectHandlers = new List<IDialogOptionSelectHandler> { handler ?? new NoOpDialogOptionSelectHandler() };
         }
 
+        public DialogOption(string text, IDialogOptionSelectHandler handler, DialogOptionContext context)
+        {
+            optionText = text;
+            _context = context ?? new DialogOptionContext();
+            _selectHandlers = new List<IDialogOptionSelectHandler> { handler ?? new NoOpDialogOptionSelectHandler() };
+        }
+
         public DialogOption(string text, IEnumerable<IDialogOptionSelectHandler> handlers, DialogOptionContext context)
         {
             optionText = text;

@@ -7,6 +7,11 @@ namespace Dialog
         private QuestKeys _questKey;
         private QuestStates _questState;
         private DialogInstance _followUpDialog;
+
+        public DialogOptionContext(DialogInstance dialog)
+        {
+            _followUpDialog = dialog;
+        }
         
         public DialogOptionContext(QuestKeys questKey, QuestStates questState, DialogInstance followUpDialog)
         {
